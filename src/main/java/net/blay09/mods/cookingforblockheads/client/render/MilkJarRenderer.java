@@ -19,8 +19,8 @@ public class MilkJarRenderer extends TileEntitySpecialRenderer<TileMilkJar> {
 	public static IBakedModel modelMilkLiquid;
 
 	@Override
-	public void render(TileMilkJar tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		if(!tileEntity.hasWorld()) {
+	public void renderTileEntityAt(TileMilkJar tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+		if(!tileEntity.hasWorldObj()) {
 			return;
 		}
 		if(blockRenderer == null) {

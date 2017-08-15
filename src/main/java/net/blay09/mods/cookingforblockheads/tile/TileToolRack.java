@@ -22,8 +22,8 @@ public class TileToolRack extends TileEntity {
         @Override
         protected void onContentsChanged(int slot) {
             markDirty();
-            IBlockState blockState = world.getBlockState(pos);
-            world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), blockState, blockState, 1|2);
+            IBlockState blockState = worldObj.getBlockState(pos);
+            worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), blockState, blockState, 1|2);
         }
     };
 

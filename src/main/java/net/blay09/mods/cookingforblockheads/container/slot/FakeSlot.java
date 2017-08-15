@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class FakeSlot extends Slot {
 
-	private ItemStack displayStack = ItemStack.EMPTY;
+	private ItemStack displayStack = null;
 
 	public FakeSlot(int slotId, int x, int y) {
 		super(null, slotId, x, y);
@@ -23,7 +23,7 @@ public class FakeSlot extends Slot {
 
 	@Override
 	public boolean getHasStack() {
-		return !displayStack.isEmpty();
+		return !(null == displayStack);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class FakeSlot extends Slot {
 
 	@Override
 	public ItemStack decrStackSize(int amount) {
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	@Override

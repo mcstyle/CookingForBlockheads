@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 public class SpiceRackRenderer extends TileEntitySpecialRenderer<TileSpiceRack> {
 
 	@Override
-	public void render(TileSpiceRack tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+	public void renderTileEntityAt(TileSpiceRack tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
 		IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
 		if(state.getBlock() != ModBlocks.spiceRack) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
 			return;
@@ -27,7 +27,7 @@ public class SpiceRackRenderer extends TileEntitySpecialRenderer<TileSpiceRack> 
 		GlStateManager.scale(0.5f, 0.5f, 0.5f);
 		for(int i = 0; i < tileEntity.getItemHandler().getSlots(); i++) {
 			ItemStack itemStack = tileEntity.getItemHandler().getStackInSlot(i);
-			if(!itemStack.isEmpty()) {
+			if(!(null == itemStack)) {
 				RenderUtils.renderItem(itemRenderer, itemStack, 0.15f, 0.35f, 0.8f - i * 0.2f, 0f, 0f, 0f, 0f);
 			}
 		}

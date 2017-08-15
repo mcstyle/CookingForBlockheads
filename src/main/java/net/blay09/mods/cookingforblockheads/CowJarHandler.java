@@ -30,13 +30,13 @@ public class CowJarHandler {
 		if(!ModConfig.general.cowJarEnabled) {
 			return;
 		}
-		if(event.getSource() == DamageSource.ANVIL && isCow(event.getEntityLiving())) {
+		if(event.getSource() == DamageSource.anvil && isCow(event.getEntityLiving())) {
 			BlockPos pos = event.getEntity().getPosition().down();
 			IBlockState blockBelow = event.getEntity().getEntityWorld().getBlockState(pos);
 			if(blockBelow.getBlock() == ModBlocks.milkJar) {
 				event.getEntity().getEntityWorld().setBlockState(pos, ModBlocks.cowJar.getDefaultState());
 			}
-			NetworkHandler.instance.sendToAllAround(new MessageCreateCowJar(pos), new NetworkRegistry.TargetPoint(event.getEntity().world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 32));
+			NetworkHandler.instance.sendToAllAround(new MessageCreateCowJar(pos), new NetworkRegistry.TargetPoint(event.getEntity().worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 32));
 			event.getEntity().setDead();
 			event.setCanceled(true);
 		}

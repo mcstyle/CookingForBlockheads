@@ -1,11 +1,13 @@
 package net.blay09.mods.cookingforblockheads.container.slot;
 
+import com.google.common.collect.Lists;
 import net.blay09.mods.cookingforblockheads.ItemUtils;
+import net.blay09.mods.cookingforblockheads.balyware.NonNullList;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.List;
 import javax.annotation.Nullable;
 
 public class FakeSlotCraftMatrix extends FakeSlot {
@@ -23,20 +25,20 @@ public class FakeSlotCraftMatrix extends FakeSlot {
 	}
 
 	public void setIngredient(@Nullable NonNullList<ItemStack> ingredients) {
-		ItemStack prevLockStack = isLocked ? getStack() : ItemStack.EMPTY;
+		ItemStack prevLockStack = isLocked ? getStack() : null;
 		visibleStacks.clear();
 		if(ingredients != null) {
 			for(ItemStack itemStack : ingredients) {
-				if(!itemStack.isEmpty()) {
+				if(!(null == itemStack)) {
 					if (itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
 						NonNullList<ItemStack> subItems = NonNullList.create();
 						CreativeTabs tab = itemStack.getItem().getCreativeTab();
 						if(tab != null) {
-							itemStack.getItem().getSubItems(tab, subItems);
+							itemStack.getItem().getSubItems(itemStack.getItem(), itemStack.getItem().getCreativeTab(), subItems);
 						}
 						visibleStacks.addAll(subItems);
 					} else {
-						itemStack.setCount(1);
+						itemStack.stackSize = 1;
 						visibleStacks.add(itemStack);
 					}
 				}
@@ -45,7 +47,7 @@ public class FakeSlotCraftMatrix extends FakeSlot {
 		visibleItemTime = 0;
 		visibleItemIndex = 0;
 		isLocked = false;
-		if(!prevLockStack.isEmpty()) {
+		if(!(null == prevLockStack)) {
 			for(int i = 0; i < visibleStacks.size(); i++) {
 				if(ItemUtils.areItemStacksEqualWithWildcard(visibleStacks.get(i), prevLockStack)) {
 					visibleItemIndex = i;
@@ -70,7 +72,7 @@ public class FakeSlotCraftMatrix extends FakeSlot {
 
 	@Override
 	public ItemStack getStack() {
-		return visibleStacks.size() > 0 ? visibleStacks.get(visibleItemIndex) : ItemStack.EMPTY;
+		return visibleStacks.size() > 0 ? visibleStacks.get(visibleItemIndex) : null;
 	}
 
 	@Override
@@ -79,7 +81,7 @@ public class FakeSlotCraftMatrix extends FakeSlot {
 	}
 
 	@Override
-	public boolean isEnabled() {
+	public boolean canBeHovered() {
 		return visibleStacks.size() > 0;
 	}
 

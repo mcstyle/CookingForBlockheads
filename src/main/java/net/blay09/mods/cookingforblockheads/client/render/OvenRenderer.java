@@ -1,6 +1,8 @@
 package net.blay09.mods.cookingforblockheads.client.render;
 
+import net.blay09.mods.cookingforblockheads.block.ModBlocks;
 import net.blay09.mods.cookingforblockheads.tile.TileOven;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -15,8 +17,8 @@ public class OvenRenderer extends TileEntitySpecialRenderer<TileOven> {
 	public static IBakedModel modelDoorActive;
 
 	@Override
-	public void render(TileOven tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		if(!tileEntity.hasWorld()) {
+	public void renderTileEntityAt(TileOven tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+		if(!tileEntity.hasWorldObj()) {
 			return;
 		}
 		BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -44,19 +46,19 @@ public class OvenRenderer extends TileEntitySpecialRenderer<TileOven> {
 		GlStateManager.rotate(blockAngle, 0f, 1f, 0f);
 		GlStateManager.scale(0.4f, 0.4f, 0.4f);
 		ItemStack itemStack = tileEntity.getToolItem(0);
-		if (!itemStack.isEmpty()) {
+		if (!(null == itemStack)) {
 			RenderUtils.renderItem(itemRenderer, itemStack, -0.55f, 0f, 0.5f, 45f, 1f, 0f, 0f);
 		}
 		itemStack = tileEntity.getToolItem(1);
-		if (!itemStack.isEmpty()) {
+		if (!(null == itemStack)) {
 			RenderUtils.renderItem(itemRenderer, itemStack, 0.55f, 0f, 0.5f, 45f, 1f, 0f, 0f);
 		}
 		itemStack = tileEntity.getToolItem(2);
-		if (!itemStack.isEmpty()) {
+		if (!(null == itemStack)) {
 			RenderUtils.renderItem(itemRenderer, itemStack, -0.55f, 0f, -0.5f, 45f, 1f, 0f, 0f);
 		}
 		itemStack = tileEntity.getToolItem(3);
-		if (!itemStack.isEmpty()) {
+		if (!(null == itemStack)) {
 			RenderUtils.renderItem(itemRenderer, itemStack, 0.55f, 0f, -0.5f, 45f, 1f, 0f, 0f);
 		}
 		GlStateManager.popMatrix();
@@ -71,7 +73,7 @@ public class OvenRenderer extends TileEntitySpecialRenderer<TileOven> {
 			float offsetZ = 0.8f;
 			for (int i = 0; i < 9; i++) {
 				itemStack = tileEntity.getItemHandler().getStackInSlot(7 + i);
-				if (!itemStack.isEmpty()) {
+				if (!(null == itemStack)) {
 					RenderUtils.renderItem(itemRenderer, itemStack, offsetX, 0f, offsetZ, 90f, 1f, 0f, 0f);
 				}
 				offsetX -= 0.8f;

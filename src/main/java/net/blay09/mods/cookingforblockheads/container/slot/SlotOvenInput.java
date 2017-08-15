@@ -13,7 +13,7 @@ public class SlotOvenInput extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return !TileOven.getSmeltingResult(stack).isEmpty();
+        return !(null == TileOven.getSmeltingResult(stack));
     }
 
 }

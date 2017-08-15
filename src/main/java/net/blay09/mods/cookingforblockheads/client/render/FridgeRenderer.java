@@ -24,7 +24,7 @@ public class FridgeRenderer extends TileEntitySpecialRenderer<TileFridge> {
     private final ResourceLocation textureFridgeLargeDoor = new ResourceLocation(CookingForBlockheads.MOD_ID, "textures/entity/fridge_large_door.png");
 
     @Override
-    public void render(TileFridge tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void renderTileEntityAt(TileFridge tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
         IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
         if(state.getBlock() != ModBlocks.fridge) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
             return;
@@ -37,7 +37,7 @@ public class FridgeRenderer extends TileEntitySpecialRenderer<TileFridge> {
         }
         GlStateManager.pushMatrix();
         EnumDyeColor fridgeColor = tileEntity.getFridgeColor();
-        int color = fridgeColor.getColorValue();
+        int color = fridgeColor.getMapColor().colorValue;
         GlStateManager.color((float) (color >> 16 & 255) / 255f, (float) (color >> 8 & 255) / 255f, (float) (color & 255) / 255f, 1f);
         GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         GlStateManager.rotate(RenderUtils.getFacingAngle(state), 0f, 1f, 0f);
@@ -76,7 +76,7 @@ public class FridgeRenderer extends TileEntitySpecialRenderer<TileFridge> {
             IItemHandler itemHandler = tileEntity.getCombinedItemHandler();
             for(int i = itemHandler.getSlots() - 1; i >= 0; i--) {
                 ItemStack itemStack = itemHandler.getStackInSlot(i);
-                if(!itemStack.isEmpty()) {
+                if(!(null == itemStack)) {
                     float offsetX, offsetY, offsetZ;
                     if(fridgeType == BlockFridge.FridgeType.LARGE) {
                         int rowIndex = i % 18;

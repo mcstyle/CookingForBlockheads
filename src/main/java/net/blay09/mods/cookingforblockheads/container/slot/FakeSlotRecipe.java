@@ -15,7 +15,7 @@ public class FakeSlotRecipe extends FakeSlot {
 
 	@Override
 	public ItemStack getStack() {
-		return recipe != null ? recipe.getOutputItem() : ItemStack.EMPTY;
+		return recipe != null ? recipe.getOutputItem() : null;
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class FakeSlotRecipe extends FakeSlot {
 	}
 
 	@Override
-	public boolean isEnabled() {
+	public boolean canBeHovered() {
 		return recipe != null;
 	}
 

@@ -7,7 +7,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -59,7 +58,7 @@ public class BlockToolRack extends BlockKitchen {
 	@Nullable
 	@Override
 	@SuppressWarnings("deprecation")
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World world, BlockPos pos) {
 		return NULL_AABB;
 	}
 
@@ -73,7 +72,7 @@ public class BlockToolRack extends BlockKitchen {
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
 		if(facing == EnumFacing.UP || facing == EnumFacing.DOWN) {
 			facing = EnumFacing.NORTH;
 		}
@@ -84,16 +83,15 @@ public class BlockToolRack extends BlockKitchen {
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
     	if(hand != EnumHand.MAIN_HAND) {
     		return true;
 		}
-    	ItemStack heldItem = player.getHeldItem(hand);
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemBlock) {
+        if(!(null == heldItem) && heldItem.getItem() instanceof ItemBlock) {
             return true;
         }
         if(hitY > 0.25f) {
-			EnumFacing stateFacing = state.getValue(FACING);
+            EnumFacing stateFacing = state.getValue(FACING);
             float hit = hitX;
             switch(stateFacing) {
                 case NORTH: hit = hitX; break;
@@ -104,11 +102,11 @@ public class BlockToolRack extends BlockKitchen {
             int hitSlot = hit > 0.5f ? 0 : 1;
             TileToolRack tileToolRack = (TileToolRack) world.getTileEntity(pos);
             if (tileToolRack != null) {
-                if (!heldItem.isEmpty()) {
+                if (heldItem != null) {
 
                     ItemStack oldToolItem = tileToolRack.getItemHandler().getStackInSlot(hitSlot);
                     ItemStack toolItem = heldItem.splitStack(1);
-                    if (!oldToolItem.isEmpty()) {
+                    if (oldToolItem != null) {
                         if (!player.inventory.addItemStackToInventory(oldToolItem)) {
                             player.dropItem(oldToolItem, false);
                         }
@@ -118,8 +116,8 @@ public class BlockToolRack extends BlockKitchen {
                     }
                 } else {
                     ItemStack itemStack = tileToolRack.getItemHandler().getStackInSlot(hitSlot);
-                    if (!itemStack.isEmpty()) {
-                        tileToolRack.getItemHandler().setStackInSlot(hitSlot, ItemStack.EMPTY);
+                    if (itemStack != null) {
+                        tileToolRack.getItemHandler().setStackInSlot(hitSlot, null);
                         player.setHeldItem(hand, itemStack);
                     }
                 }
@@ -129,19 +127,19 @@ public class BlockToolRack extends BlockKitchen {
         return true;
     }
 
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileToolRack tileEntity = (TileToolRack) world.getTileEntity(pos);
-		if (tileEntity != null) {
-			ItemUtils.dropItemHandlerItems(world, pos, tileEntity.getItemHandler());
-		}
-		super.breakBlock(world, pos, state);
-	}
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        TileToolRack tileEntity = (TileToolRack) world.getTileEntity(pos);
+        if (tileEntity != null) {
+            ItemUtils.dropItemHandlerItems(world, pos, tileEntity.getItemHandler());
+        }
+        super.breakBlock(world, pos, state);
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
-		super.addInformation(stack, world, tooltip, advanced);
-        for (String s : I18n.format("tooltip." + registryName + ".description").split("\\\\n")) {
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, player, tooltip, advanced);
+        for (String s : I18n.format("tooltip." + getRegistryName() + ".description").split("\\\\n")) {
             tooltip.add(TextFormatting.GRAY + s);
         }
     }

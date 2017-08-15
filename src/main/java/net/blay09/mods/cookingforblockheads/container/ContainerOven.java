@@ -63,10 +63,10 @@ public class ContainerOven extends Container implements IContainerWithDoor {
     @Override
     public void addListener(IContainerListener listener) {
         super.addListener(listener);
-        listener.sendWindowProperty(this, 0, tileEntity.furnaceBurnTime);
-        listener.sendWindowProperty(this, 1, tileEntity.currentItemBurnTime);
+        listener.sendProgressBarUpdate(this, 0, tileEntity.furnaceBurnTime);
+        listener.sendProgressBarUpdate(this, 1, tileEntity.currentItemBurnTime);
         for(int i = 0; i < tileEntity.slotCookTime.length; i++) {
-            listener.sendWindowProperty(this, 2 + i, tileEntity.slotCookTime[i]);
+            listener.sendProgressBarUpdate(this, 2 + i, tileEntity.slotCookTime[i]);
         }
     }
 
@@ -82,16 +82,16 @@ public class ContainerOven extends Container implements IContainerWithDoor {
 
         for(IContainerListener listener : listeners) {
             if (this.lastBurnTime != tileEntity.furnaceBurnTime) {
-                listener.sendWindowProperty(this, 0, tileEntity.furnaceBurnTime);
+                listener.sendProgressBarUpdate(this, 0, tileEntity.furnaceBurnTime);
             }
 
             if (this.lastItemBurnTime != tileEntity.currentItemBurnTime) {
-                listener.sendWindowProperty(this, 1, tileEntity.currentItemBurnTime);
+                listener.sendProgressBarUpdate(this, 1, tileEntity.currentItemBurnTime);
             }
 
             for (int i = 0; i < tileEntity.slotCookTime.length; i++) {
                 if (lastCookTime[i] != tileEntity.slotCookTime[i]) {
-                    listener.sendWindowProperty(this, 2 + i, tileEntity.slotCookTime[i]);
+                    listener.sendProgressBarUpdate(this, 2 + i, tileEntity.slotCookTime[i]);
                 }
             }
 
@@ -115,7 +115,7 @@ public class ContainerOven extends Container implements IContainerWithDoor {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-        ItemStack itemStack = ItemStack.EMPTY;
+        ItemStack itemStack = null;
         Slot slot = inventorySlots.get(slotIndex);
 
         if (slot != null && slot.getHasStack()) {
@@ -124,45 +124,45 @@ public class ContainerOven extends Container implements IContainerWithDoor {
 
             if (slotIndex >= 7 && slotIndex < 20) {
                 if (!mergeItemStack(slotStack, 20, 56, true)) {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
                 slot.onSlotChange(slotStack, itemStack);
             } else if(slotIndex >= 4 && slotIndex <= 6) {
                 if (!this.mergeItemStack(slotStack, 20, 56, false)) {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
             } else if (slotIndex >= 20) {
                 ItemStack smeltingResult = TileOven.getSmeltingResult(slotStack);
                 if (TileOven.isItemFuel(slotStack)) {
                     if (!mergeItemStack(slotStack, 3, 4, false)) {
-                        return ItemStack.EMPTY;
+                        return null;
                     }
-                } else if (!smeltingResult.isEmpty()) {
+                } else if (!(null == smeltingResult)) {
                     if (!this.mergeItemStack(slotStack, 0, 3, false)) {
-                        return ItemStack.EMPTY;
+                        return null;
                     }
                 } else if (slotIndex >= 20 && slotIndex < 47) {
                     if (!this.mergeItemStack(slotStack, 47, 56, false)) {
-                        return ItemStack.EMPTY;
+                        return null;
                     }
                 } else if (slotIndex >= 47 && slotIndex < 56 && !this.mergeItemStack(slotStack, 20, 47, false)) {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
             } else if (!this.mergeItemStack(slotStack, 20, 47, false)) {
-                return ItemStack.EMPTY;
+                return null;
             }
 
-            if (slotStack.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+            if ((null == slotStack)) {
+                slot.putStack(null);
             } else {
                 slot.onSlotChanged();
             }
 
-            if (slotStack.getCount() == itemStack.getCount()) {
-                return ItemStack.EMPTY;
+            if (slotStack.stackSize == itemStack.stackSize) {
+                return null;
             }
 
-            slot.onTake(player, slotStack);
+            slot.onPickupFromSlot(player, slotStack);
         }
 
         return itemStack;

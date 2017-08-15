@@ -33,8 +33,8 @@ public class CounterRenderer extends TileEntitySpecialRenderer<TileCounter> {
 	};
 
 	@Override
-	public void render(TileCounter tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		if (!tileEntity.hasWorld()) {
+	public void renderTileEntityAt(TileCounter tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+		if (!tileEntity.hasWorldObj()) {
 			return;
 		}
 		BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -78,7 +78,7 @@ public class CounterRenderer extends TileEntitySpecialRenderer<TileCounter> {
 			IItemHandler itemHandler = tileEntity.getItemHandler();
 			for (int i = itemHandler.getSlots() - 1; i >= 0; i--) {
 				ItemStack itemStack = itemHandler.getStackInSlot(i);
-				if (!itemStack.isEmpty()) {
+				if (!(null == itemStack)) {
 					float offsetX, offsetY, offsetZ;
 					int rowIndex = i % 13;
 					offsetX = 0.7f;

@@ -27,8 +27,8 @@ public class TileSpiceRack extends TileEntity implements IDropoffManager {
         @Override
         protected void onContentsChanged(int slot) {
             markDirty();
-            IBlockState blockState = world.getBlockState(pos);
-            world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), blockState, blockState, 1|2);
+            IBlockState blockState = worldObj.getBlockState(pos);
+            worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), blockState, blockState, 1|2);
         }
     };
 
@@ -87,7 +87,7 @@ public class TileSpiceRack extends TileEntity implements IDropoffManager {
     }
 
     @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+    public boolean shouldRefresh(World worldObj, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
 

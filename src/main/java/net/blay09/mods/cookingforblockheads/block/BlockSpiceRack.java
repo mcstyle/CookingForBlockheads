@@ -8,7 +8,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -59,8 +58,7 @@ public class BlockSpiceRack extends BlockKitchen {
 
 	@Nullable
 	@Override
-	@SuppressWarnings("deprecation")
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
 		return NULL_AABB;
 	}
 
@@ -72,10 +70,8 @@ public class BlockSpiceRack extends BlockKitchen {
 				world.isSideSolid(pos.offset(EnumFacing.SOUTH), EnumFacing.NORTH);
 	}
 
-
 	@Override
-	@SuppressWarnings("deprecation")
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		if(facing == EnumFacing.UP || facing == EnumFacing.DOWN) {
 			facing = EnumFacing.NORTH;
 		}
@@ -86,15 +82,14 @@ public class BlockSpiceRack extends BlockKitchen {
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-    	if(hand != EnumHand.MAIN_HAND) {
-    		return true;
-		}
-    	ItemStack heldItem = player.getHeldItem(hand);
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemBlock) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if(hand != EnumHand.MAIN_HAND) {
             return true;
         }
-		if(!heldItem.isEmpty() || player.isSneaking()) {
+        if(heldItem != null && heldItem.getItem() instanceof ItemBlock) {
+            return true;
+        }
+		if(heldItem != null || player.isSneaking()) {
 			float hit = hitX;
 			EnumFacing stateFacing = state.getValue(FACING);
             switch(stateFacing) {
@@ -106,10 +101,10 @@ public class BlockSpiceRack extends BlockKitchen {
 			int hitSlot = (int) ((1f - hit) * 9);
 			TileSpiceRack tileSpiceRack = (TileSpiceRack) world.getTileEntity(pos);
 			if(tileSpiceRack != null) {
-				if(!heldItem.isEmpty()) {
+				if(heldItem != null) {
 					ItemStack oldToolItem = tileSpiceRack.getItemHandler().getStackInSlot(hitSlot);
                     ItemStack toolItem = heldItem.splitStack(1);
-                    if (!oldToolItem.isEmpty()) {
+                    if (oldToolItem != null) {
                         if (!player.inventory.addItemStackToInventory(oldToolItem)) {
                             player.dropItem(oldToolItem, false);
                         }
@@ -119,8 +114,8 @@ public class BlockSpiceRack extends BlockKitchen {
                     }
 				} else {
 					ItemStack itemStack = tileSpiceRack.getItemHandler().getStackInSlot(hitSlot);
-                    if (!itemStack.isEmpty()) {
-						tileSpiceRack.getItemHandler().setStackInSlot(hitSlot, ItemStack.EMPTY);
+                    if (!(null == itemStack)) {
+						tileSpiceRack.getItemHandler().setStackInSlot(hitSlot, null);
 						player.setHeldItem(hand, itemStack);
                     }
 				}
@@ -140,9 +135,9 @@ public class BlockSpiceRack extends BlockKitchen {
 		super.breakBlock(world, pos, state);
 	}
 
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
-		super.addInformation(stack, world, tooltip, advanced);
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, player, tooltip, advanced);
         for (String s : I18n.format("tooltip." + registryName + ".description").split("\\\\n")) {
             tooltip.add(TextFormatting.GRAY + s);
         }

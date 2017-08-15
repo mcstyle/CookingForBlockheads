@@ -1,22 +1,25 @@
 package net.blay09.mods.cookingforblockheads.network.message;
 
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
+import net.blay09.mods.cookingforblockheads.balyware.NonNullList;
 import net.blay09.mods.cookingforblockheads.registry.RecipeType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+
+import java.util.List;
 
 public class MessageCraftRecipe implements IMessage {
 
     private ItemStack outputItem;
     private RecipeType recipeType;
-    private NonNullList<ItemStack> craftMatrix;
+    private List<ItemStack> craftMatrix;
     private boolean stack;
 
     public MessageCraftRecipe() {}
 
-    public MessageCraftRecipe(ItemStack outputItem, RecipeType recipeType, NonNullList<ItemStack> craftMatrix, boolean stack) {
+    public MessageCraftRecipe(ItemStack outputItem, RecipeType recipeType, List<ItemStack> craftMatrix, boolean stack) {
         this.outputItem = outputItem;
         this.recipeType = recipeType;
         this.craftMatrix = craftMatrix;
@@ -28,7 +31,7 @@ public class MessageCraftRecipe implements IMessage {
         outputItem = ByteBufUtils.readItemStack(buf);
         recipeType = RecipeType.fromId(buf.readByte());
         int ingredientCount = buf.readByte();
-        craftMatrix = NonNullList.create();
+        craftMatrix = Lists.newArrayListWithCapacity(ingredientCount);
         for(int i = 0; i < ingredientCount; i++) {
             craftMatrix.add(ByteBufUtils.readItemStack(buf));
         }
@@ -46,7 +49,7 @@ public class MessageCraftRecipe implements IMessage {
         buf.writeBoolean(stack);
     }
 
-    public NonNullList<ItemStack> getCraftMatrix() {
+    public List<ItemStack> getCraftMatrix() {
         return craftMatrix;
     }
 

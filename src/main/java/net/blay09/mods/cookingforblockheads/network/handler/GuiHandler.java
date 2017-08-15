@@ -41,7 +41,7 @@ public class GuiHandler implements IGuiHandler {
                 return null;
             }
             ItemStack heldItem = player.getHeldItem(EnumHand.values()[x]);
-            if(!heldItem.isEmpty()) {
+            if(!(null == heldItem)) {
                 switch (heldItem.getItemDamage()) {
                     case 0:
                         return new ContainerRecipeBook(player).setNoFilter();
@@ -95,7 +95,7 @@ public class GuiHandler implements IGuiHandler {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         if(id == ITEM_RECIPE_BOOK) { // x: EnumHand
             ItemStack heldItem = player.getHeldItem(EnumHand.values()[x]);
-            if(!heldItem.isEmpty()) {
+            if(!(null == heldItem)) {
                 switch (heldItem.getItemDamage()) {
                     case 0:
                         return new GuiRecipeBook(new ContainerRecipeBook(player).setNoFilter());

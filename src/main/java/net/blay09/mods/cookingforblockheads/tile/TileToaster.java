@@ -38,14 +38,14 @@ public class TileToaster extends TileEntity implements ITickable {
     @Override
     public boolean receiveClientEvent(int id, int type) {
         if(id == 0) {
-            world.playSound(null, pos, ModSounds.toasterStart, SoundCategory.BLOCKS, 1f, 1f);
+            worldObj.playSound(null, pos, ModSounds.toasterStart, SoundCategory.BLOCKS, 1f, 1f);
             return true;
         } else if(id == 1) {
-            world.playSound(null, pos, ModSounds.toasterStop, SoundCategory.BLOCKS, 1f, 1f);
+            worldObj.playSound(null, pos, ModSounds.toasterStop, SoundCategory.BLOCKS, 1f, 1f);
             return true;
         } else if(id == 2) {
-            IBlockState state = world.getBlockState(pos);
-            world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
+            IBlockState state = worldObj.getBlockState(pos);
+            worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
             return true;
         }
         return super.receiveClientEvent(id, type);
@@ -88,23 +88,23 @@ public class TileToaster extends TileEntity implements ITickable {
     public void update() {
         if(active) {
             toastTicks--;
-            if(toastTicks <= 0 && !world.isRemote) {
+            if(toastTicks <= 0 && !worldObj.isRemote) {
                 for(int i = 0; i < itemHandler.getSlots(); i++) {
                     ItemStack inputStack = itemHandler.getStackInSlot(i);
-                    if(!inputStack.isEmpty()) {
+                    if(!(null == inputStack)) {
                         ToastHandler toastHandler = CookingRegistry.getToastHandler(inputStack);
-                        ItemStack outputStack = toastHandler instanceof ToastOutputHandler ? ((ToastOutputHandler) toastHandler).getToasterOutput(inputStack) : ItemStack.EMPTY;
-                        if (outputStack.isEmpty()) {
+                        ItemStack outputStack = toastHandler instanceof ToastOutputHandler ? ((ToastOutputHandler) toastHandler).getToasterOutput(inputStack) : null;
+                        if ((null == outputStack)) {
                             outputStack = inputStack;
                         } else {
                             outputStack = outputStack.copy();
                         }
-                        EntityItem entityItem = new EntityItem(world, pos.getX() + 0.5f, pos.getY() + 0.75f, pos.getZ() + 0.5f, outputStack);
+                        EntityItem entityItem = new EntityItem(worldObj, pos.getX() + 0.5f, pos.getY() + 0.75f, pos.getZ() + 0.5f, outputStack);
                         entityItem.motionX = 0f;
                         entityItem.motionY = 0.1f;
                         entityItem.motionZ = 0f;
-                        world.spawnEntity(entityItem);
-                        itemHandler.setStackInSlot(i, ItemStack.EMPTY);
+                        worldObj.spawnEntityInWorld(entityItem);
+                        itemHandler.setStackInSlot(i, null);
                     }
                 }
                 setActive(false);
@@ -116,14 +116,14 @@ public class TileToaster extends TileEntity implements ITickable {
         this.active = active;
         if(active) {
             toastTicks = TOAST_TICKS;
-            world.addBlockEvent(pos, blockType, 0, 0);
+            worldObj.addBlockEvent(pos, blockType, 0, 0);
         } else {
             toastTicks = 0;
-            world.addBlockEvent(pos, blockType, 1, 0);
+            worldObj.addBlockEvent(pos, blockType, 1, 0);
         }
-        IBlockState state = world.getBlockState(pos);
-        world.addBlockEvent(pos, blockType, 2, 0);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, blockType.getActualState(state, world, pos), 3);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.addBlockEvent(pos, blockType, 2, 0);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, blockType.getActualState(state, worldObj, pos), 3);
         markDirty();
     }
 
@@ -140,7 +140,7 @@ public class TileToaster extends TileEntity implements ITickable {
     }
 
     @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+    public boolean shouldRefresh(World worldObj, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
 }

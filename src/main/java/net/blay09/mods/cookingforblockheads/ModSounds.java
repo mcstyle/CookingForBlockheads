@@ -2,7 +2,7 @@ package net.blay09.mods.cookingforblockheads;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 
 public class ModSounds {
 

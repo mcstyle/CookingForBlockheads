@@ -16,7 +16,7 @@ public class HandlerCraftRecipe implements IMessageHandler<MessageCraftRecipe, I
 	@Nullable
     public IMessage onMessage(final MessageCraftRecipe message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-			Container container = ctx.getServerHandler().player.openContainer;
+			Container container = ctx.getServerHandler().playerEntity.openContainer;
 			if(container instanceof ContainerRecipeBook) {
 				((ContainerRecipeBook) container).tryCraft(message.getOutputItem(), message.getRecipeType(), message.getCraftMatrix(), message.isStack());
 			}

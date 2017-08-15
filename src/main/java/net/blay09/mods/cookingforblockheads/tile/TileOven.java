@@ -43,7 +43,7 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if(slot < 3) { // Input Slots
-                if(getSmeltingResult(stack).isEmpty()) {
+                if(null == getSmeltingResult(stack)) {
                     return stack;
                 }
             } else if(slot == 3) {
@@ -88,8 +88,8 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
 
     public void setOvenColor(EnumDyeColor color) {
         this.ovenColor = color;
-        IBlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 1|2);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 1|2);
         markDirty();
     }
 
@@ -101,7 +101,7 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
     @Override
     public void update() {
         if(isFirstTick) {
-            facing = world.getBlockState(pos).getValue(BlockOven.FACING);
+            facing = worldObj.getBlockState(pos).getValue(BlockOven.FACING);
             isFirstTick = false;
         }
 
@@ -118,16 +118,16 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
             furnaceBurnTime--;
         }
 
-        if (!world.isRemote) {
+        if (!worldObj.isRemote) {
             if (furnaceBurnTime == 0 && shouldConsumeFuel()) {
                 // Check for fuel items in side slots
                 for (int i = 0; i < itemHandlerFuel.getSlots(); i++) {
                     ItemStack fuelItem = itemHandlerFuel.getStackInSlot(i);
-                    if (!fuelItem.isEmpty()) {
+                    if (!(null == fuelItem)) {
                         currentItemBurnTime = furnaceBurnTime = (int) Math.max(1, (float) getItemBurnTime(fuelItem) * ModConfig.general.ovenFuelTimeMultiplier);
                         if (furnaceBurnTime != 0) {
-                            fuelItem.shrink(1);
-                            if (fuelItem.getCount() == 0) {
+                            fuelItem.stackSize--;
+                            if (fuelItem.stackSize == 0) {
                                 itemHandlerFuel.setStackInSlot(i, fuelItem.getItem().getContainerItem(fuelItem));
                             }
                             hasChanged = true;
@@ -142,14 +142,14 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
             for (int i = 0; i < itemHandlerProcessing.getSlots(); i++) {
                 ItemStack itemStack = itemHandlerProcessing.getStackInSlot(i);
 
-                if (!itemStack.isEmpty()) {
+                if (!(null == itemStack)) {
                     if (slotCookTime[i] != -1) {
                         if(furnaceBurnTime > 0) {
                             slotCookTime[i]++;
                         }
                         if (slotCookTime[i] >= COOK_TIME * ModConfig.general.ovenCookTimeMultiplier) {
                             ItemStack resultStack = getSmeltingResult(itemStack);
-                            if (!resultStack.isEmpty()) {
+                            if (!(null == resultStack)) {
                                 itemHandlerProcessing.setStackInSlot(i, resultStack.copy());
                                 slotCookTime[i] = -1;
                                 if (firstTransferSlot == -1) {
@@ -170,7 +170,7 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
                 ItemStack transferStack = itemHandlerProcessing.getStackInSlot(firstTransferSlot);
                 transferStack = ItemHandlerHelper.insertItemStacked(itemHandlerOutput, transferStack, false);
                 itemHandlerProcessing.setStackInSlot(firstTransferSlot, transferStack);
-                if(transferStack.isEmpty()) {
+                if((null == transferStack)) {
                     slotCookTime[firstTransferSlot] = 0;
                 }
                 hasChanged = true;
@@ -180,10 +180,10 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
             if (firstEmptySlot != -1) {
                 for (int j = 0; j < itemHandlerInput.getSlots(); j++) {
                     ItemStack itemStack = itemHandlerInput.getStackInSlot(j);
-                    if (!itemStack.isEmpty()) {
+                    if (!(null == itemStack)) {
                         itemHandlerProcessing.setStackInSlot(firstEmptySlot, itemStack.splitStack(1));
-                        if (itemStack.getCount() <= 0) {
-                            itemHandlerInput.setStackInSlot(j, ItemStack.EMPTY);
+                        if (itemStack.stackSize <= 0) {
+                            itemHandlerInput.setStackInSlot(j, null);
                         }
                         break;
                     }
@@ -198,17 +198,17 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
 
     public static ItemStack getSmeltingResult(ItemStack itemStack) {
         ItemStack result = CookingRegistry.getSmeltingResult(itemStack);
-        if(!result.isEmpty()) {
+        if(!(null == result)) {
             return result;
         }
         result = FurnaceRecipes.instance().getSmeltingResult(itemStack);
-        if(!result.isEmpty() && result.getItem() instanceof ItemFood) {
+        if(!(null == result) && result.getItem() instanceof ItemFood) {
             return result;
         }
-        if(!result.isEmpty() && CookingRegistry.isNonFoodRecipe(result)) {
+        if(!(null == result) && CookingRegistry.isNonFoodRecipe(result)) {
             return result;
         }
-        return ItemStack.EMPTY;
+        return null;
     }
 
     public static boolean isItemFuel(ItemStack itemStack) {
@@ -226,7 +226,7 @@ public class TileOven extends TileEntity implements ITickable, IKitchenSmeltingP
     private boolean shouldConsumeFuel() {
         for (int i = 0; i < itemHandlerProcessing.getSlots(); i++) {
             ItemStack cookingStack = itemHandlerProcessing.getStackInSlot(i);
-            if (!cookingStack.isEmpty() && slotCookTime[i] != -1) {
+            if (!(null == cookingStack) && slotCookTime[i] != -1) {
                 return true;
             }
         }

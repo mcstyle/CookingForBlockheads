@@ -7,6 +7,7 @@ import net.blay09.mods.cookingforblockheads.KitchenMultiBlock;
 import net.blay09.mods.cookingforblockheads.api.FoodRecipeWithStatus;
 import net.blay09.mods.cookingforblockheads.api.RecipeStatus;
 import net.blay09.mods.cookingforblockheads.api.capability.IKitchenItemProvider;
+import net.blay09.mods.cookingforblockheads.balyware.NonNullList;
 import net.blay09.mods.cookingforblockheads.container.comparator.ComparatorName;
 import net.blay09.mods.cookingforblockheads.container.inventory.InventoryCraftBook;
 import net.blay09.mods.cookingforblockheads.container.slot.FakeSlotCraftMatrix;
@@ -28,7 +29,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nullable;
 
@@ -48,7 +48,7 @@ public class ContainerRecipeBook extends Container {
 	private KitchenMultiBlock multiBlock;
 	private boolean isDirty = true;
 
-	private ItemStack lastOutputItem = ItemStack.EMPTY;
+	private ItemStack lastOutputItem = null;
 
 	private final List<FoodRecipeWithStatus> itemList = Lists.newArrayList();
 	private Comparator<FoodRecipeWithStatus> currentSorting = new ComparatorName();
@@ -96,7 +96,7 @@ public class ContainerRecipeBook extends Container {
 	public ItemStack slotClick(int slotNumber, int dragType, ClickType clickType, EntityPlayer player) {
 		if (slotNumber >= 0 && slotNumber < inventorySlots.size()) {
 			Slot slot = inventorySlots.get(slotNumber);
-			if (player.world.isRemote) {
+			if (player.worldObj.isRemote) {
 				if (slot instanceof FakeSlotRecipe) {
 					FakeSlotRecipe slotRecipe = (FakeSlotRecipe) slot;
 					if (slotRecipe.getRecipe() != null) {
@@ -104,7 +104,7 @@ public class ContainerRecipeBook extends Container {
 							if (allowCrafting && (clickType == ClickType.QUICK_MOVE || clickType == ClickType.PICKUP)) {
 								FoodRecipeWithIngredients recipe = getSelection();
 								if (recipe != null) {
-									NonNullList<ItemStack> craftMatrix = NonNullList.create();
+									List<ItemStack> craftMatrix = Lists.newArrayList();
 									if (recipe.getRecipeType() == RecipeType.CRAFTING) {
 										for (FakeSlotCraftMatrix matrixSlot : matrixSlots) {
 											craftMatrix.add(matrixSlot.getStack());
@@ -134,13 +134,13 @@ public class ContainerRecipeBook extends Container {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 
-		if (!player.world.isRemote) {
-			if (isDirty || player.inventory.timesChanged > 0) {
+		if (!player.worldObj.isRemote) {
+			if (isDirty || player.inventory.inventoryChanged) {
 				findAndSendItemList();
-				if (!lastOutputItem.isEmpty()) {
+				if (!(null == lastOutputItem)) {
 					findAndSendRecipes(lastOutputItem);
 				}
-				player.inventory.timesChanged = 0;
+				player.inventory.inventoryChanged = false;
 				isDirty = false;
 			}
 		}
@@ -158,23 +158,23 @@ public class ContainerRecipeBook extends Container {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-		ItemStack itemStack = ItemStack.EMPTY;
+		ItemStack itemStack = null;
 		Slot slot = inventorySlots.get(slotIndex);
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			itemStack = slotStack.copy();
 			if (slotIndex >= 48 && slotIndex < 57) {
 				if (!mergeItemStack(slotStack, 21, 48, true)) {
-					return ItemStack.EMPTY;
+					return null;
 				}
 			} else if (slotIndex >= 21 && slotIndex < 48) {
 				if (!mergeItemStack(slotStack, 48, 57, false)) {
-					return ItemStack.EMPTY;
+					return null;
 				}
 			}
 
-			if (slotStack.isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+			if ((null == slotStack)) {
+				slot.putStack(null);
 			} else {
 				slot.onSlotChanged();
 			}
@@ -236,16 +236,16 @@ public class ContainerRecipeBook extends Container {
 				if (ingredient != null) {
 					for (ItemStack checkStack : ingredient.getItemStacks()) {
 						ItemStack foundStack = CookingRegistry.findAnyItemStack(checkStack, inventories, requireBucket);
-						if (foundStack.isEmpty()) {
+						if ((null == foundStack)) {
 							if (noFilter || ingredient.isToolItem()) {
-								foundStack = ingredient.getItemStacks().length > 0 ? ingredient.getItemStacks()[0] : ItemStack.EMPTY;
+								foundStack = ingredient.getItemStacks().length > 0 ? ingredient.getItemStacks()[0] : null;
 							}
 						}
-						if (!foundStack.isEmpty()) {
+						if (!(null == foundStack)) {
 							stackList.add(foundStack);
 						}
 					}
-					if(stackList.isEmpty()) {
+					if((null == stackList)) {
 						continue outerLoop;
 					}
 				}
@@ -256,8 +256,8 @@ public class ContainerRecipeBook extends Container {
 		NetworkHandler.instance.sendTo(new MessageRecipes(outputItem, resultList), (EntityPlayerMP) player);
 	}
 
-	public void tryCraft(ItemStack outputItem, RecipeType recipeType, NonNullList<ItemStack> craftMatrix, boolean stack) {
-		if (outputItem.isEmpty() || craftMatrix.size() == 0) {
+	public void tryCraft(ItemStack outputItem, RecipeType recipeType, List<ItemStack> craftMatrix, boolean stack) {
+		if (null == outputItem || craftMatrix.size() == 0) {
 			return;
 		}
 		if (allowCrafting) {
@@ -265,7 +265,7 @@ public class ContainerRecipeBook extends Container {
 				int craftCount = stack ? outputItem.getMaxStackSize() : 1;
 				for (int i = 0; i < craftCount; i++) {
 					ItemStack itemStack = craftBook.tryCraft(outputItem, craftMatrix, player, multiBlock);
-					if (!itemStack.isEmpty()) {
+					if (!(null == itemStack)) {
 						if (!player.inventory.addItemStackToInventory(itemStack)) {
 							player.dropItem(itemStack, false);
 						}
@@ -419,7 +419,7 @@ public class ContainerRecipeBook extends Container {
 
 	public void setRecipeList(ItemStack outputItem, List<FoodRecipeWithIngredients> recipeList) {
 		selectedRecipeList = recipeList.size() > 0 ? recipeList : null;
-		if (lastOutputItem.isEmpty() || lastOutputItem.getItem() != outputItem.getItem() || selectedRecipeList == null || selectedRecipeIndex >= selectedRecipeList.size()) {
+		if ((null == lastOutputItem) || lastOutputItem.getItem() != outputItem.getItem() || selectedRecipeList == null || selectedRecipeIndex >= selectedRecipeList.size()) {
 			selectedRecipeIndex = 0;
 		}
 		populateMatrixSlots();

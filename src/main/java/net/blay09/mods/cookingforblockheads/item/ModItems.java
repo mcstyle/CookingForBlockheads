@@ -6,13 +6,13 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 
 @GameRegistry.ObjectHolder(CookingForBlockheads.MOD_ID)
 public class ModItems {
 
 	@GameRegistry.ObjectHolder(ItemRecipeBook.name)
-	public static Item recipeBook = Items.AIR;
+	public static Item recipeBook;
 
 	public static void register(IForgeRegistry<Item> registry) {
 		registry.registerAll(

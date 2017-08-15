@@ -58,7 +58,7 @@ public class TileCounter extends TileEntity implements ITickable, IDropoffManage
     public void update() {
         if(isFirstTick) {
             // onLoad doesn't work when you need to touch the world
-            IBlockState state = world.getBlockState(pos);
+            IBlockState state = worldObj.getBlockState(pos);
             cachedFacing = state.getValue(BlockCounter.FACING);
             cachedFlipped = state.getValue(BlockCounter.FLIPPED);
             isFirstTick = false;
@@ -143,8 +143,8 @@ public class TileCounter extends TileEntity implements ITickable, IDropoffManage
 
     public void setColor(EnumDyeColor color) {
         this.color = color;
-        IBlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
         markDirty();
     }
 
@@ -177,5 +177,4 @@ public class TileCounter extends TileEntity implements ITickable, IDropoffManage
     public boolean acceptsDropoff(EntityPlayer entityPlayer) {
         return true;
     }
-
 }

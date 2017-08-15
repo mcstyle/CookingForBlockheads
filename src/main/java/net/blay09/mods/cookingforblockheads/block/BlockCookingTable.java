@@ -10,7 +10,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -56,14 +55,14 @@ public class BlockCookingTable extends BlockKitchen {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack heldItem = player.getHeldItem(hand);
-        if(!heldItem.isEmpty()) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        //ItemStack heldItem = player.getHeldItem(hand);
+        if(!(null == heldItem)) {
             TileCookingTable tileEntity = (TileCookingTable) world.getTileEntity(pos);
             if(tileEntity != null) {
                 if (heldItem.getItem() == Items.DYE) {
                     if (recolorBlock(world, pos, facing, EnumDyeColor.byDyeDamage(heldItem.getItemDamage()))) {
-                        heldItem.shrink(1);
+                        heldItem.stackSize--;
                     }
                     return true;
                 }
@@ -76,11 +75,11 @@ public class BlockCookingTable extends BlockKitchen {
             TileCookingTable tileEntity = (TileCookingTable) world.getTileEntity(pos);
             if(tileEntity != null) {
                 ItemStack noFilterBook = tileEntity.getNoFilterBook();
-                if (!noFilterBook.isEmpty()) {
+                if (!(null == noFilterBook)) {
                     if (!player.inventory.addItemStackToInventory(noFilterBook)) {
                         player.dropItem(noFilterBook, false);
                     }
-                    tileEntity.setNoFilterBook(ItemStack.EMPTY);
+                    tileEntity.setNoFilterBook(null);
                     return true;
                 }
             }
@@ -95,7 +94,7 @@ public class BlockCookingTable extends BlockKitchen {
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileCookingTable tileEntity = (TileCookingTable) world.getTileEntity(pos);
         if(tileEntity != null) {
-            ItemUtils.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, tileEntity.getNoFilterBook());
+            ItemUtils.dropItem(world, pos, tileEntity.getNoFilterBook());
         }
         super.breakBlock(world, pos, state);
     }
@@ -106,9 +105,9 @@ public class BlockCookingTable extends BlockKitchen {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
-        super.addInformation(stack, world, tooltip, advanced);
-        for (String s : I18n.format("tooltip." + registryName + ".description").split("\\\\n")) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, player, tooltip, advanced);
+        for (String s : I18n.format("tooltip." + getRegistryName() + ".description").split("\\\\n")) {
             tooltip.add(TextFormatting.GRAY + s);
         }
     }

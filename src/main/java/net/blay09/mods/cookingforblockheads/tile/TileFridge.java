@@ -51,8 +51,8 @@ public class TileFridge extends TileEntity implements ITickable, IDropoffManager
 
     public void setFridgeColor(EnumDyeColor fridgeColor) {
         this.fridgeColor = fridgeColor;
-        IBlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
         markDirty();
     }
 
@@ -110,17 +110,17 @@ public class TileFridge extends TileEntity implements ITickable, IDropoffManager
 
     @Nullable
     public TileFridge findNeighbourFridge() {
-        if (world.getBlockState(pos.up()).getBlock() == ModBlocks.fridge) {
-            return (TileFridge) world.getTileEntity(pos.up());
-        } else if (world.getBlockState(pos.down()).getBlock() == ModBlocks.fridge) {
-            return (TileFridge) world.getTileEntity(pos.down());
+        if (worldObj.getBlockState(pos.up()).getBlock() == ModBlocks.fridge) {
+            return (TileFridge) worldObj.getTileEntity(pos.up());
+        } else if (worldObj.getBlockState(pos.down()).getBlock() == ModBlocks.fridge) {
+            return (TileFridge) worldObj.getTileEntity(pos.down());
         }
         return null;
     }
 
     public TileFridge getBaseFridge() {
-        if (world.getBlockState(pos.down()).getBlock() == ModBlocks.fridge) {
-            TileFridge baseFridge = (TileFridge) world.getTileEntity(pos.down());
+        if (worldObj.getBlockState(pos.down()).getBlock() == ModBlocks.fridge) {
+            TileFridge baseFridge = (TileFridge) worldObj.getTileEntity(pos.down());
             if(baseFridge != null) {
                 return baseFridge;
             }
@@ -182,5 +182,4 @@ public class TileFridge extends TileEntity implements ITickable, IDropoffManager
     public boolean acceptsDropoff(EntityPlayer entityPlayer) {
         return true;
     }
-
 }

@@ -96,7 +96,7 @@ public class ClientProxy extends CommonProxy {
 			if (world != null && pos != null) {
 				TileEntity tileEntity = world.getTileEntity(pos);
 				if (tileEntity instanceof TileFridge) {
-					return ((TileFridge) tileEntity).getBaseFridge().getFridgeColor().getColorValue();
+					return ((TileFridge) tileEntity).getBaseFridge().getFridgeColor().getMapColor().colorValue;
 				}
 			}
 			return 0xFFFFFFFF;

@@ -8,7 +8,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -65,8 +64,8 @@ public class BlockSink extends BlockKitchen {
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-        IBlockState state = super.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, meta, placer);
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
+        IBlockState state = super.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, meta, placer, stack);
         return state.withProperty(FLIPPED, shouldBePlacedFlipped(pos, state.getValue(FACING), placer));
     }
 
@@ -116,26 +115,25 @@ public class BlockSink extends BlockKitchen {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack heldItem = player.getHeldItem(hand);
-        if (!heldItem.isEmpty() && heldItem.getItem() == Items.DYE) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!(null == heldItem) && heldItem.getItem() == Items.DYE) {
             if (recolorBlock(world, pos, facing, EnumDyeColor.byDyeDamage(heldItem.getItemDamage()))) {
-                heldItem.shrink(1);
+                heldItem.stackSize -= 1;
             }
             return true;
         }
         ItemStack resultStack = CookingRegistry.getSinkOutput(heldItem);
-        if(!resultStack.isEmpty()) {
+        if(!(null == resultStack)) {
             NBTTagCompound tagCompound = heldItem.getTagCompound();
             ItemStack newItem = resultStack.copy();
             if(tagCompound != null) {
                 newItem.setTagCompound(tagCompound);
             }
-            if(heldItem.getCount() <= 1) {
+            if(heldItem.stackSize <= 1) {
                 player.setHeldItem(hand, newItem);
             } else {
                 if(player.inventory.addItemStackToInventory(newItem)) {
-                    heldItem.shrink(1);
+                    heldItem.stackSize -= 1;
                 }
             }
             spawnParticles(world, pos, state);
@@ -145,10 +143,10 @@ public class BlockSink extends BlockKitchen {
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity != null) {
                 IFluidHandler fluidHandler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
-                if(fluidHandler == null || !FluidUtil.interactWithFluidHandler(player, hand, fluidHandler)) {
+                if(fluidHandler == null || !FluidUtil.interactWithFluidHandler(heldItem, fluidHandler, player)) {
                     spawnParticles(world, pos, state);
                 }
-                return !heldItem.isEmpty() && !(heldItem.getItem() instanceof ItemBlock);
+                return !(null == heldItem) && !(heldItem.getItem() instanceof ItemBlock);
             }
         }
         return true;
@@ -179,8 +177,8 @@ public class BlockSink extends BlockKitchen {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
-        super.addInformation(stack, world, tooltip, advanced);
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, player, tooltip, advanced);
         for (String s : I18n.format("tooltip." + registryName + ".description").split("\\\\n")) {
             tooltip.add(TextFormatting.GRAY + s);
         }

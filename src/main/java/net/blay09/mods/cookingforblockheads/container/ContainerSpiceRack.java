@@ -32,21 +32,21 @@ public class ContainerSpiceRack extends Container {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-		ItemStack itemStack = ItemStack.EMPTY;
+		ItemStack itemStack = null;
 		Slot slot = inventorySlots.get(slotIndex);
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			itemStack = slotStack.copy();
 			if (slotIndex < 9) {
 				if (!this.mergeItemStack(slotStack, 9, inventorySlots.size(), true)) {
-					return ItemStack.EMPTY;
+					return null;
 				}
 			} else if (!this.mergeItemStack(slotStack, 0, 9, false)) {
-				return ItemStack.EMPTY;
+				return null;
 			}
 
-			if (slotStack.isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+			if ((null == slotStack)) {
+				slot.putStack(null);
 			} else {
 				slot.onSlotChanged();
 			}

@@ -16,7 +16,7 @@ public class HandlerRequestRecipes implements IMessageHandler<MessageRequestReci
 	@Nullable
     public IMessage onMessage(final MessageRequestRecipes message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-			Container container = ctx.getServerHandler().player.openContainer;
+			Container container = ctx.getServerHandler().playerEntity.openContainer;
 			if(container instanceof ContainerRecipeBook) {
 				((ContainerRecipeBook) container).findAndSendRecipes(message.getOutputItem());
 			}

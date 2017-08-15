@@ -1,0 +1,89 @@
+item.cookingforblockheads:recipe_book_tier0.name=Кулинария для кубоголовых
+item.cookingforblockheads:recipe_book_tier1.name=Кулинария для кубоголовых I
+item.cookingforblockheads:recipe_book_tier2.name=Кулинария для кубоголовых II
+
+tooltip.cookingforblockheads:recipe_book_tier0=#Версия без фильтра
+tooltip.cookingforblockheads:recipe_book_tier0.description=Показывает все рецепты продуктов.
+tooltip.cookingforblockheads:recipe_book_tier1=Книга рецептов
+tooltip.cookingforblockheads:recipe_book_tier1.description=Показывает еду, которую вы можете сделать из \nингредиентов, которые у вас есть в инвентаре.
+tooltip.cookingforblockheads:recipe_book_tier2=Ремесленная книга
+tooltip.cookingforblockheads:recipe_book_tier2.description=Можете создавать еду, используя то, \nчто у вас есть в вашем инвентаре.
+
+###
+
+tile.cookingforblockheads:cooking_table.name=Кулинарный стол
+tile.cookingforblockheads:oven.name=Духовой шкаф
+tile.cookingforblockheads:fridge.name=Холодильник
+tile.cookingforblockheads:sink.name=Раковина
+tile.cookingforblockheads:tool_rack.name=Инструментальная вешалка
+tile.cookingforblockheads:milk_jar.name=Молочная банка
+tile.cookingforblockheads:cow_jar.name=Корова в банке
+tile.cookingforblockheads:toaster.name=Тостер
+tile.cookingforblockheads:spice_rack.name=Набор специй
+tile.cookingforblockheads:counter.name=Кухонный стол
+tile.cookingforblockheads:corner.name=Кухонный угол
+tile.cookingforblockheads:kitchen_floor.name=Кухонный пол
+
+tooltip.cookingforblockheads:multiblock_kitchen=Многоблочная кухня
+tooltip.cookingforblockheads:dyeable=Окрашиваемый
+tooltip.cookingforblockheads:cooking_table.description=Наделяет способностями повара.
+tooltip.cookingforblockheads:oven.description=Наделяет способностями пекаря.
+tooltip.cookingforblockheads:sink.description=Обеспечивает рецепты водой.
+tooltip.cookingforblockheads:fridge.description=Хранит ингредиенты для рецептов.
+tooltip.cookingforblockheads:tool_rack.description=Предоставляет инструменты для рецептов.
+tooltip.cookingforblockheads:milk_jar.description=Предоставляет молоко рецептам.
+tooltip.cookingforblockheads:cow_jar.description=Медленно производит молоко для рецептов.
+tooltip.cookingforblockheads:toaster.description=Волшебно превращает хлеб в тосты.
+tooltip.cookingforblockheads:spice_rack.description=Хранит специи и ингредиенты.
+tooltip.cookingforblockheads:counter.description=Хранит ингредиенты для рецептов.
+tooltip.cookingforblockheads:corner.description=Не используется самостоятельно.
+tooltip.cookingforblockheads:kitchen_floor.description=Не используется самостоятельно.
+
+###
+
+gui.cookingforblockheads:no_ingredients=Недостаточно \nингредиентов
+gui.cookingforblockheads:no_selection=Выберите элемент \nсправа, чтобы \nувидеть его рецепт.
+
+tooltip.cookingforblockheads:click_to_see_recipe=Нажмите, чтобы посмотреть рецепт
+tooltip.cookingforblockheads:click_to_craft_one=Нажмите еще раз, чтобы создать
+tooltip.cookingforblockheads:click_to_smelt_one=Нажмите еще раз, чтобы приготовить
+tooltip.cookingforblockheads:click_to_craft_stack=Shift-Click для создания стека
+tooltip.cookingforblockheads:click_to_smelt_stack=Shift-Click для создания стека
+tooltip.cookingforblockheads:missing_tools=Отсутствуют инструменты для создания
+tooltip.cookingforblockheads:missing_ingredients=Отсутствуют ингредиенты для изготовления
+tooltip.cookingforblockheads:missing_oven=Отсутствует печь для приготовления пищи
+tooltip.cookingforblockheads:sort_by_name=Сортировать по имени
+tooltip.cookingforblockheads:sort_by_hunger=Сортировать по Восстановлено Голода
+tooltip.cookingforblockheads:sort_by_saturation=Сортировать по Насыщенность
+tooltip.cookingforblockheads:click_to_lock=Нажмите, чтобы заблокировать элемент
+tooltip.cookingforblockheads:click_to_unlock=Нажмите, чтобы разблокировать элемент
+tooltip.cookingforblockheads:scroll_to_switch=Прокрутка для выбора элемента
+
+###
+
+container.cookingforblockheads:oven=Кухонная плита
+container.cookingforblockheads:fridge=Холодильник
+container.cookingforblockheads:spice_rack=Набор специй
+container.cookingforblockheads:counter=Кухонный стол
+
+itemGroup.cookingforblockheads=Кулинария для кубоголовых
+
+###
+
+waila.cookingforblockheads:milk_stored=Молоко хранится: %d/%d
+waila.cookingforblockheads:toast_progress=Поджаривается... (%s)
+
+hint.cookingforblockheads:more_foods.cutBreadFirst=Используйте нож, чтобы сначала разрезать хлеб.
+
+###
+
+cookingforblockheads:subtitle.fridge_open=Холодильник открывается
+cookingforblockheads:subtitle.fridge_close=Холодильник закрывается
+cookingforblockheads:subtitle.oven_open=Открывается духовка
+cookingforblockheads:subtitle.oven_close=Духовка закрывается
+cookingforblockheads:subtitle.toaster_start=Тостер начинает поджаривать
+cookingforblockheads:subtitle.toaster_stop=Тостер закончил поджаривать
+
+###
+
+jei.cookingforblockheads:cowJar=Корова в банке

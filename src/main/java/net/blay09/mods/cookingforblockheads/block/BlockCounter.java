@@ -10,7 +10,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -124,11 +123,10 @@ public class BlockCounter extends BlockKitchen {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		ItemStack heldItem = player.getHeldItem(hand);
-		if (!heldItem.isEmpty() && heldItem.getItem() == Items.DYE) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (!(null == heldItem) && heldItem.getItem() == Items.DYE) {
 			if (recolorBlock(world, pos, facing, EnumDyeColor.byDyeDamage(heldItem.getItemDamage()))) {
-				heldItem.shrink(1);
+				heldItem.stackSize--;
 			}
 			return true;
 		}
@@ -138,7 +136,7 @@ public class BlockCounter extends BlockKitchen {
 				if (player.isSneaking()) {
 					tileCounter.getDoorAnimator().toggleForcedOpen();
 					return true;
-				} else if (!heldItem.isEmpty() && tileCounter.getDoorAnimator().isForcedOpen()) {
+				} else if (!(null == heldItem) && tileCounter.getDoorAnimator().isForcedOpen()) {
 					heldItem = ItemHandlerHelper.insertItemStacked(tileCounter.getItemHandler(), heldItem, false);
 					player.setHeldItem(hand, heldItem);
 					return true;
@@ -146,7 +144,7 @@ public class BlockCounter extends BlockKitchen {
 			}
 		}
 		if (!world.isRemote) {
-			if(facing == EnumFacing.UP && !heldItem.isEmpty()) {
+			if(facing == EnumFacing.UP && !(null == heldItem)) {
 				return false;
 			}
 			player.openGui(CookingForBlockheads.instance, GuiHandler.COUNTER, world, pos.getX(), pos.getY(), pos.getZ());
@@ -156,8 +154,8 @@ public class BlockCounter extends BlockKitchen {
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		IBlockState state = super.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, meta, placer);
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
+		IBlockState state = super.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, meta, placer, stack);
 		return state.withProperty(FLIPPED, shouldBePlacedFlipped(pos, state.getValue(FACING), placer));
 	}
 
@@ -171,9 +169,9 @@ public class BlockCounter extends BlockKitchen {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
-		super.addInformation(stack, world, tooltip, advanced);
-		for (String s : I18n.format("tooltip." + registryName + ".description").split("\\\\n")) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+		super.addInformation(stack, player, tooltip, advanced);
+		for (String s : I18n.format("tooltip." + getRegistryName() + ".description").split("\\\\n")) {
 			tooltip.add(TextFormatting.GRAY + s);
 		}
 	}

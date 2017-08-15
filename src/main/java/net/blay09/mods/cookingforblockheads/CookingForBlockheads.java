@@ -28,17 +28,22 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod.EventBusSubscriber(modid = CookingForBlockheads.MOD_ID)
-@Mod(modid = CookingForBlockheads.MOD_ID, acceptedMinecraftVersions = "[1.12]", dependencies = "after:mousetweaks[2.8,)")
+@Mod.EventBusSubscriber()
+@Mod(modid = CookingForBlockheads.MOD_ID, acceptedMinecraftVersions = "[1.10]", dependencies = "after:mousetweaks[2.8,)")
 public class CookingForBlockheads {
 
-    public static final String MOD_ID = "cookingforblockheads";
+	public static final String MOD_ID = "cookingforblockheads";
 	public static final Logger logger = LogManager.getLogger(MOD_ID);
 
 	public static final CreativeTabs creativeTab = new CreativeTabs(MOD_ID) {
 		@Override
-		public ItemStack getTabIconItem() {
-			return new ItemStack(ModItems.recipeBook, 1, 1);
+		public Item getTabIconItem() {
+			return ModItems.recipeBook;
+		}
+
+		@Override
+		public int getIconItemDamage() {
+			return 1;
 		}
 	};
 

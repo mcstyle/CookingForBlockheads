@@ -73,8 +73,8 @@ public class TileCorner extends TileEntity {
 
     public void setColor(EnumDyeColor color) {
         this.color = color;
-        IBlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
         markDirty();
     }
 

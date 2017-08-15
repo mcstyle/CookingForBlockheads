@@ -3,7 +3,6 @@ package net.blay09.mods.cookingforblockheads.client.gui;
 import net.blay09.mods.cookingforblockheads.CookingForBlockheads;
 import net.blay09.mods.cookingforblockheads.tile.TileOven;
 import net.blay09.mods.cookingforblockheads.container.ContainerOven;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -50,16 +49,16 @@ public class GuiOven extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		String s = I18n.format("container." + CookingForBlockheads.MOD_ID + ":oven");
-		this.fontRenderer.drawString(s, (this.xSize + 22) / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-		this.fontRenderer.drawString(I18n.format("container.inventory"), 8 + 22, this.ySize - 96 + 2, 4210752);
+		this.fontRendererObj.drawString(s, (this.xSize + 22) / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 4210752);
+		this.fontRendererObj.drawString(I18n.format("container.inventory"), 8 + 22, this.ySize - 96 + 2, 4210752);
 
 
 		for (int i = 0; i < 9; i++) {
 			Slot slot = inventorySlots.inventorySlots.get(i + 7);
 			if(slot.getHasStack()) {
 				ItemStack itemStack = TileOven.getSmeltingResult(slot.getStack());
-				if (!itemStack.isEmpty()) {
-					renderItemWithTint(itemStack, slot.xPos, slot.yPos + 16, 0xFFFFFF + ((int) (tileEntity.getCookProgress(i) * 255) << 24));
+				if (!(null == itemStack)) {
+					renderItemWithTint(itemStack, slot.xDisplayPosition, slot.yDisplayPosition + 16, 0xFFFFFF + ((int) (tileEntity.getCookProgress(i) * 255) << 24));
 				}
 			}
 		}
@@ -104,7 +103,7 @@ public class GuiOven extends GuiContainer {
 		model = ForgeHooksClient.handleCameraTransforms(model, ItemCameraTransforms.TransformType.GUI, false);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexBuffer = tessellator.getBuffer();
+		VertexBuffer vertexBuffer = tessellator.getBuffer();
 		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 		for (EnumFacing facing : EnumFacing.values()) {
 			renderQuads(vertexBuffer, model.getQuads(null, facing, 0L), color, itemStack);
@@ -120,8 +119,8 @@ public class GuiOven extends GuiContainer {
 		mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
 	}
 
-	private void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, ItemStack stack) {
-		boolean useItemTint = color == -1 && !stack.isEmpty();
+	private void renderQuads(VertexBuffer renderer, List<BakedQuad> quads, int color, ItemStack stack) {
+		boolean useItemTint = color == -1 && !(null == stack);
 		int i = 0;
 		for (int j = quads.size(); i < j; ++i) {
 			BakedQuad quad = quads.get(i);

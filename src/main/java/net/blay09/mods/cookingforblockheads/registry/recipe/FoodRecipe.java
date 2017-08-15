@@ -2,6 +2,7 @@ package net.blay09.mods.cookingforblockheads.registry.recipe;
 
 import net.blay09.mods.cookingforblockheads.registry.RecipeType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public abstract class FoodRecipe {
 
+    public IRecipe parent;
     protected List<FoodIngredient> craftMatrix;
     protected ItemStack outputItem;
     protected int recipeWidth = 3;

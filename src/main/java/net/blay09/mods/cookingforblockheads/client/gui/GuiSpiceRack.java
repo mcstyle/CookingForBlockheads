@@ -3,7 +3,6 @@ package net.blay09.mods.cookingforblockheads.client.gui;
 import net.blay09.mods.cookingforblockheads.CookingForBlockheads;
 import net.blay09.mods.cookingforblockheads.container.ContainerSpiceRack;
 import net.blay09.mods.cookingforblockheads.tile.TileSpiceRack;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,8 +32,8 @@ public class GuiSpiceRack extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(I18n.format("container." + CookingForBlockheads.MOD_ID + ":spice_rack"), 8, 6, 4210752);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, 38, 4210752);
+		fontRendererObj.drawString(I18n.format("container." + CookingForBlockheads.MOD_ID + ":spice_rack"), 8, 6, 4210752);
+		fontRendererObj.drawString(I18n.format("container.inventory"), 8, 38, 4210752);
 	}
 
 	@Override

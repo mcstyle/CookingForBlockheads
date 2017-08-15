@@ -3,6 +3,7 @@ package net.blay09.mods.cookingforblockheads.tile;
 import net.blay09.mods.cookingforblockheads.ModConfig;
 import net.blay09.mods.cookingforblockheads.api.capability.CapabilityKitchenItemProvider;
 import net.blay09.mods.cookingforblockheads.api.capability.IKitchenItemProvider;
+import net.blay09.mods.cookingforblockheads.balyware.NonNullList;
 import net.blay09.mods.cookingforblockheads.registry.CookingRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -13,7 +14,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -80,7 +80,7 @@ public class TileSink extends TileEntity {
             if(!ModConfig.general.sinkRequiresWater || fluidTank.getFluidAmount() - waterUsed > amount * 1000) {
                 if(requireBucket && getStackInSlot(slot).getItem() == Items.MILK_BUCKET) {
                     if(!CookingRegistry.consumeBucket(inventories, simulate)) {
-                        return ItemStack.EMPTY;
+                        return null;
                     }
                 }
                 if(simulate) {
@@ -90,7 +90,7 @@ public class TileSink extends TileEntity {
                 }
                 return ItemHandlerHelper.copyStackWithSize(getStackInSlot(slot), amount);
             }
-            return ItemStack.EMPTY;
+            return null;
         }
 
         @Override
@@ -101,7 +101,7 @@ public class TileSink extends TileEntity {
                     break;
                 }
             }
-            return ItemStack.EMPTY;
+            return null;
         }
 
         @Override
@@ -185,8 +185,8 @@ public class TileSink extends TileEntity {
 
     public void setColor(EnumDyeColor color) {
         this.color = color;
-        IBlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
         markDirty();
     }
 }

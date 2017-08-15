@@ -17,11 +17,11 @@ import javax.annotation.Nullable;
 
 public class TileCookingTable extends TileEntity {
 
-    private ItemStack noFilterBook = ItemStack.EMPTY;
+    private ItemStack noFilterBook = null;
     private EnumDyeColor color = EnumDyeColor.WHITE;
 
     public boolean hasNoFilterBook() {
-        return !noFilterBook.isEmpty();
+        return !(null == noFilterBook);
     }
 
     public ItemStack getNoFilterBook() {
@@ -37,7 +37,7 @@ public class TileCookingTable extends TileEntity {
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
         NBTTagCompound itemCompound = new NBTTagCompound();
-        if(!noFilterBook.isEmpty()) {
+        if(!(null == noFilterBook)) {
             noFilterBook.writeToNBT(itemCompound);
         }
         tagCompound.setTag("NoFilterBook", itemCompound);
@@ -49,7 +49,7 @@ public class TileCookingTable extends TileEntity {
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
         if(tagCompound.hasKey("NoFilterBook")) {
-            setNoFilterBook(new ItemStack(tagCompound.getCompoundTag("NoFilterBook")));
+            setNoFilterBook(ItemStack.loadItemStackFromNBT(tagCompound.getCompoundTag("NoFilterBook")));
         }
         color = EnumDyeColor.byDyeDamage(tagCompound.getByte("Color"));
     }
@@ -94,8 +94,8 @@ public class TileCookingTable extends TileEntity {
 
     public void setColor(EnumDyeColor color) {
         this.color = color;
-        IBlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
+        IBlockState state = worldObj.getBlockState(pos);
+        worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
         markDirty();
     }
 }

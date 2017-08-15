@@ -14,7 +14,7 @@ public class AppleCoreAddon implements FoodStatsProvider {
 
     @Override
     public float getSaturation(ItemStack itemStack, EntityPlayer entityPlayer) {
-        return FoodValues.get(itemStack, entityPlayer).getSaturationIncrement(entityPlayer);
+        return FoodValues.get(itemStack, entityPlayer).getSaturationIncrement();
     }
 
     @Override

@@ -1,11 +1,6 @@
 package net.blay09.mods.cookingforblockheads.compat;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.IWailaRegistrar;
-import mcp.mobius.waila.api.WailaPlugin;
+import mcp.mobius.waila.api.*;
 import net.blay09.mods.cookingforblockheads.block.BlockMilkJar;
 import net.blay09.mods.cookingforblockheads.block.BlockToaster;
 import net.blay09.mods.cookingforblockheads.tile.TileMilkJar;
@@ -20,10 +15,8 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-@WailaPlugin
-public class WailaProvider implements IWailaPlugin {
+public class WailaProvider {
 
-	@Override
 	public void register(IWailaRegistrar registrar) {
 		registrar.registerBodyProvider(new MilkJarDataProvider(), BlockMilkJar.class);
 		registrar.registerBodyProvider(new ToasterDataProvider(), BlockToaster.class);
@@ -32,7 +25,7 @@ public class WailaProvider implements IWailaPlugin {
 	public static class MilkJarDataProvider implements IWailaDataProvider {
 		@Override
 		public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-			return ItemStack.EMPTY;
+			return null;
 		}
 
 		@Override
@@ -67,7 +60,7 @@ public class WailaProvider implements IWailaPlugin {
 	public static class ToasterDataProvider implements IWailaDataProvider {
 		@Override
 		public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
-			return ItemStack.EMPTY;
+			return null;
 		}
 
 		@Override

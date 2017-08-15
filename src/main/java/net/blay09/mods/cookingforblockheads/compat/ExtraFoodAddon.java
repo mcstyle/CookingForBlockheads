@@ -19,7 +19,7 @@ public class ExtraFoodAddon extends SimpleAddon {
 
 		final ItemStack breadItem = getModItemStack("BreadSlice");
 		final ItemStack toastItem = getModItemStack("Toast");
-		if(!breadItem.isEmpty() && !toastItem.isEmpty()) {
+		if(!(null == breadItem) && !(null == toastItem)) {
 			CookingForBlockheadsAPI.addToastHandler(breadItem, new ToastOutputHandler() {
 				@Override
 				public ItemStack getToasterOutput(ItemStack itemStack) {

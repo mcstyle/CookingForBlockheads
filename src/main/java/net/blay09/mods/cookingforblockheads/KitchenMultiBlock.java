@@ -77,16 +77,16 @@ public class KitchenMultiBlock implements IKitchenMultiBlock {
 		ItemStack restStack = itemStack.copy().splitStack(count);
 		for (IKitchenSmeltingProvider provider : smeltingProviderList) {
 			restStack = provider.smeltItem(restStack);
-			if (restStack.isEmpty()) {
+			if ((null == restStack)) {
 				break;
 			}
 		}
-		itemStack.shrink(count - (!restStack.isEmpty() ? restStack.getCount() : 0));
+		itemStack.stackSize -= (count - (!(null == restStack) ? restStack.stackSize : 0));
 		return itemStack;
 	}
 
 	public void trySmelt(ItemStack outputItem, ItemStack inputItem, EntityPlayer player, boolean stack) {
-		if (inputItem.isEmpty()) {
+		if ((null == inputItem)) {
 			return;
 		}
 		boolean requireBucket = CookingRegistry.doesItemRequireBucketForCrafting(outputItem);
@@ -96,11 +96,11 @@ public class KitchenMultiBlock implements IKitchenMultiBlock {
 			for (int i = 0; i < itemProvider.getSlots(); i++) {
 				ItemStack itemStack = itemProvider.getStackInSlot(i);
 				if (ItemUtils.areItemStacksEqualWithWildcard(itemStack, inputItem)) {
-					int smeltCount = Math.min(itemStack.getCount(), stack ? inputItem.getMaxStackSize() : 1);
+					int smeltCount = Math.min(itemStack.stackSize, stack ? inputItem.getMaxStackSize() : 1);
 					ItemStack restStack = itemProvider.useItemStack(i, smeltCount, false, inventories, requireBucket);
-					if (!restStack.isEmpty()) {
+					if (!(null == restStack)) {
 						restStack = smeltItem(restStack, smeltCount);
-						if (!restStack.isEmpty()) {
+						if (!(null == restStack)) {
 							restStack = itemProvider.returnItemStack(restStack);
 							if (!player.inventory.addItemStackToInventory(restStack)) {
 								player.dropItem(restStack, false);

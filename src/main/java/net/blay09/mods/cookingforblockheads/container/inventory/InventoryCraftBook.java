@@ -10,7 +10,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -47,7 +46,7 @@ public class InventoryCraftBook extends InventoryCrafting {
 		super(container, 3, 3);
 	}
 
-	public ItemStack tryCraft(ItemStack outputItem, NonNullList<ItemStack> craftMatrix, EntityPlayer player, KitchenMultiBlock multiBlock) {
+	public ItemStack tryCraft(ItemStack outputItem, List<ItemStack> craftMatrix, EntityPlayer player, KitchenMultiBlock multiBlock) {
 		boolean requireContainer = CookingRegistry.doesItemRequireBucketForCrafting(outputItem);
 
 		// Reset the simulation before we start
@@ -61,14 +60,14 @@ public class InventoryCraftBook extends InventoryCrafting {
 		// Find matching items from source inventories
 		matrixLoop:for(int i = 0; i < craftMatrix.size(); i++) {
 			ItemStack ingredient = craftMatrix.get(i);
-            if(!ingredient.isEmpty()) {
+            if(!(null == ingredient)) {
                 for(int j = 0; j < inventories.size(); j++) {
 					IKitchenItemProvider itemProvider = inventories.get(j);
                     for (int k = 0; k < itemProvider.getSlots(); k++) {
                         ItemStack itemStack = itemProvider.getStackInSlot(k);
                         if (ItemUtils.areItemStacksEqualWithWildcard(itemStack, ingredient)) {
 							itemStack = itemProvider.useItemStack(k, 1, true, inventories, requireContainer);
-							if(!itemStack.isEmpty()) {
+							if(!(null == itemStack)) {
 								sourceItems[i] = new SourceItem(inventories.get(j), k, itemStack);
 								continue matrixLoop;
 							}
@@ -80,22 +79,22 @@ public class InventoryCraftBook extends InventoryCrafting {
 
 		// Populate the crafting grid
 		for(int i = 0; i < sourceItems.length; i++) {
-			setInventorySlotContents(i, sourceItems[i] != null ? sourceItems[i].getSourceStack() : ItemStack.EMPTY);
+			setInventorySlotContents(i, sourceItems[i] != null ? sourceItems[i].getSourceStack() : null);
 		}
 
 		// Find the matching recipe and make sure it matches what the client expects
-		IRecipe craftRecipe = CookingRegistry.findFoodRecipe(this, player.world);
-		if(craftRecipe == null || craftRecipe.getRecipeOutput().isEmpty() || craftRecipe.getRecipeOutput().getItem() != outputItem.getItem()) {
-			return ItemStack.EMPTY;
+		IRecipe craftRecipe = CookingRegistry.findFoodRecipe(this, player.worldObj);
+		if(craftRecipe == null || craftRecipe.getRecipeOutput() == null || craftRecipe.getRecipeOutput().getItem() != outputItem.getItem()) {
+			return null;
 		}
 
 		// Get the final result and remove ingredients
 		ItemStack result = craftRecipe.getCraftingResult(this);
-		if(!result.isEmpty()) {
+		if(!(null == result)) {
 			fireEventsAndHandleAchievements(player, result);
 			for(int i = 0; i < getSizeInventory(); i++) {
 				ItemStack itemStack = getStackInSlot(i);
-				if(!itemStack.isEmpty()) {
+				if(!(null == itemStack)) {
 					if(sourceItems[i] != null) {
 						// Eat the ingredients
 						IKitchenItemProvider sourceProvider = sourceItems[i].getSourceProvider();
@@ -106,9 +105,9 @@ public class InventoryCraftBook extends InventoryCrafting {
 
 						// Return container items (like empty buckets)
 						ItemStack containerItem = ForgeHooks.getContainerItem(itemStack);
-						if(!containerItem.isEmpty()) {
+						if(!(null == containerItem)) {
 							ItemStack restStack = sourceProvider.returnItemStack(containerItem);
-							if(!restStack.isEmpty()) {
+							if(!(null == restStack)) {
 								ItemHandlerHelper.giveItemToPlayer(player, restStack);
 							}
 						}
@@ -121,7 +120,7 @@ public class InventoryCraftBook extends InventoryCrafting {
 
 	private void fireEventsAndHandleAchievements(EntityPlayer player, ItemStack result) {
 		FMLCommonHandler.instance().firePlayerCraftingEvent(player, result, this);
-		result.onCrafting(player.world, player, 1);
+		result.onCrafting(player.worldObj, player, 1);
 	}
 
 

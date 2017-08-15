@@ -2,6 +2,7 @@ package net.blay09.mods.cookingforblockheads.tile;
 
 import net.blay09.mods.cookingforblockheads.api.capability.CapabilityKitchenItemProvider;
 import net.blay09.mods.cookingforblockheads.api.capability.IKitchenItemProvider;
+import net.blay09.mods.cookingforblockheads.balyware.NonNullList;
 import net.blay09.mods.cookingforblockheads.block.BlockMilkJar;
 import net.blay09.mods.cookingforblockheads.network.VanillaPacketHandler;
 import net.blay09.mods.cookingforblockheads.registry.CookingRegistry;
@@ -13,7 +14,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -48,7 +48,7 @@ public class TileMilkJar extends TileEntity {
 			if(tileMilkJar.getMilkAmount() - milkUsed >= amount * 1000) {
 				if(requireBucket && getStackInSlot(slot).getItem() == Items.MILK_BUCKET) {
 					if(!CookingRegistry.consumeBucket(inventories, simulate)) {
-						return ItemStack.EMPTY;
+						return null;
 					}
 				}
 				if(simulate) {
@@ -58,7 +58,7 @@ public class TileMilkJar extends TileEntity {
 				}
 				return ItemHandlerHelper.copyStackWithSize(getStackInSlot(slot), amount);
 			}
-			return ItemStack.EMPTY;
+			return null;
 		}
 
 		@Override
@@ -69,7 +69,7 @@ public class TileMilkJar extends TileEntity {
 					break;
 				}
 			}
-			return ItemStack.EMPTY;
+			return null;
 		}
 
 		@Override

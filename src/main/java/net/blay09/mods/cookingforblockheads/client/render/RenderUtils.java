@@ -3,11 +3,7 @@ package net.blay09.mods.cookingforblockheads.client.render;
 import net.blay09.mods.cookingforblockheads.block.BlockKitchen;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
@@ -45,7 +41,7 @@ public class RenderUtils {
 		return angle;
 	}
 
-	public static void renderBlockAt(Minecraft mc, IBlockState state, World world, BlockPos pos, BufferBuilder renderer, @Nullable IBakedModel modelOverride) {
+	public static void renderBlockAt(Minecraft mc, IBlockState state, World world, BlockPos pos, VertexBuffer renderer, @Nullable IBakedModel modelOverride) {
 		BlockRendererDispatcher dispatcher = mc.getBlockRendererDispatcher();
 		try {
 			EnumBlockRenderType renderType = state.getRenderType();
@@ -58,7 +54,7 @@ public class RenderUtils {
 		} catch (Throwable ignored) {}
 	}
 
-	public static void renderBlockAt(Minecraft mc, IBlockState state, World world, BlockPos pos, BufferBuilder renderer) {
+	public static void renderBlockAt(Minecraft mc, IBlockState state, World world, BlockPos pos, VertexBuffer renderer) {
 		renderBlockAt(mc, state, world, pos, renderer, null);
 	}
 
