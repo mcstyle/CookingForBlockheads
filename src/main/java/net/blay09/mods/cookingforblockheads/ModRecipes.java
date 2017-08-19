@@ -44,7 +44,7 @@ public class ModRecipes {
 
 		// Sink
 		//if(config.getBoolean("Sink", "blocks", true, "")) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.sink), "III", "WBW", "WWW", 'I', "ingotIron", 'W', "logWood", 'B', Items.WATER_BUCKET));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.sink), "III", "CBC", "CCC", 'I', "ingotIron", 'C', Blocks.HARDENED_CLAY, 'B', Items.WATER_BUCKET));
 		//}
 
 		// Toaster
